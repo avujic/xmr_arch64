@@ -4,8 +4,9 @@
  * Copyright 2014      Lucas Jones <https://github.com/lucasjones>
  * Copyright 2014-2016 Wolf9466    <https://github.com/OhGodAPet>
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
- * Copyright 2016-2017 XMRig       <support@xmrig.com>
- *
+ * Copyright 2017-2018 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
+ * Copyright 2018      Lee Clagett <https://github.com/vtnerd>
+ * Copyright 2016-2018 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,58 +23,76 @@
  */
 
 
-#ifdef __FreeBSD__
-#   include <sys/types.h>
-#   include <sys/param.h>
-#   include <sys/cpuset.h>
-#   include <pthread_np.h>
+#include <stdlib.h>
+#include <sys/mman.h>
+
+
+#if defined(XMRIG_ARM) && !defined(__clang__)
+#   include "aligned_malloc.h"
+#else
+#   include <mm_malloc.h>
 #endif
 
 
-#include <pthread.h>
-#include <sched.h>
-#include <unistd.h>
-#include <string.h>
+#include "crypto/CryptoNight.h"
+#include "log/Log.h"
+#include "Mem.h"
+#include "Options.h"
+#include "xmrig.h"
 
 
-#include "Cpu.h"
-
-
-#ifdef __FreeBSD__
-typedef cpuset_t cpu_set_t;
-#endif
-
-
-void Cpu::init()
+bool Mem::allocate(int algo, int threads, bool doubleHash, bool enabled)
 {
-#   ifdef XMRIG_NO_LIBCPUID
-    m_totalThreads = sysconf(_SC_NPROCESSORS_CONF);
-#   endif
+    m_algo       = algo;
+    m_threads    = threads;
+    m_doubleHash = doubleHash;
 
-    initCommon();
+    const int ratio = (doubleHash && algo != xmrig::ALGO_CRYPTONIGHT_LITE) ? 2 : 1;
+    m_size          = MONERO_MEMORY * (threads * ratio + 1);
+
+    if (!enabled) {
+        m_memory = static_cast<uint8_t*>(_mm_malloc(m_size, 16));
+        return true;
+    }
+
+    m_flags |= HugepagesAvailable;
+
+#   if defined(__APPLE__)
+    m_memory = static_cast<uint8_t*>(mmap(0, m_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, VM_FLAGS_SUPERPAGE_SIZE_2MB, 0));
+#   elif defined(__FreeBSD__)
+    m_memory = static_cast<uint8_t*>(mmap(0, m_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_ALIGNED_SUPER | MAP_PREFAULT_READ, -1, 0));
+#   else
+    m_memory = static_cast<uint8_t*>(mmap(0, m_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_POPULATE, 0, 0));
+#   endif
+    if (m_memory == MAP_FAILED) {
+        m_memory = static_cast<uint8_t*>(_mm_malloc(m_size, 16));
+        return true;
+    }
+
+    m_flags |= HugepagesEnabled;
+
+    if (madvise(m_memory, m_size, MADV_RANDOM | MADV_WILLNEED) != 0) {
+        LOG_ERR("madvise failed");
+    }
+
+    if (mlock(m_memory, m_size) == 0) {
+        m_flags |= Lock;
+    }
+
+    return true;
 }
 
 
-void Cpu::setAffinity(int id, uint64_t mask)
+void Mem::release()
 {
-    cpu_set_t set;
-    CPU_ZERO(&set);
-
-    for (int i = 0; i < m_totalThreads; i++) {
-        if (mask & (1UL << i)) {
-            CPU_SET(i, &set);
+    if (m_flags & HugepagesEnabled) {
+        if (m_flags & Lock) {
+            munlock(m_memory, m_size);
         }
-    }
 
-    if (id == -1) {
-#       ifndef __FreeBSD__
-        sched_setaffinity(0, sizeof(&set), &set);
-#       endif
-    } else {
-#       ifndef __ANDROID__
-        pthread_setaffinity_np(pthread_self(), sizeof(&set), &set);
-#       else
-        sched_setaffinity(gettid(), sizeof(&set), &set);
-#       endif
+        munmap(m_memory, m_size);
+    }
+    else {
+        _mm_free(m_memory);
     }
 }
