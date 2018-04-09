@@ -31,7 +31,7 @@
 
 
 #include "net/Id.h"
-#include "xmr_arch64.h"
+#include "xmrig.h"
 
 
 class Job
