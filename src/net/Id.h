@@ -21,41 +21,78 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __WORKER_H__
-#define __WORKER_H__
+#ifndef __ID_H__
+#define __ID_H__
 
 
-#include <atomic>
-#include <stdint.h>
+#include <string.h>
 
 
-#include "interfaces/IWorker.h"
+namespace xmrig {
 
 
-struct cryptonight_ctx;
-class Handle;
-
-
-class Worker : public IWorker
+class Id
 {
 public:
-    Worker(Handle *handle);
-    ~Worker();
+    inline Id() :
+        m_data()
+    {
+    }
 
-    inline uint64_t hashCount() const override { return m_hashCount.load(std::memory_order_relaxed); }
-    inline uint64_t timestamp() const override { return m_timestamp.load(std::memory_order_relaxed); }
 
-protected:
-    void storeStats();
+    inline Id(const char *id, size_t sizeFix = 0)
+    {
+        setId(id, sizeFix);
+    }
 
-    cryptonight_ctx *m_ctx;
-    int m_id;
-    int m_threads;
-    std::atomic<uint64_t> m_hashCount;
-    std::atomic<uint64_t> m_timestamp;
-    uint64_t m_count;
-    uint64_t m_sequence;
+
+    inline bool operator==(const Id &other) const
+    {
+        return memcmp(m_data, other.m_data, sizeof(m_data)) == 0;
+    }
+
+
+    inline bool operator!=(const Id &other) const
+    {
+        return memcmp(m_data, other.m_data, sizeof(m_data)) != 0;
+    }
+
+
+    Id &operator=(const Id &other)
+    {
+        memcpy(m_data, other.m_data, sizeof(m_data));
+
+        return *this;
+    }
+
+
+    inline bool setId(const char *id, size_t sizeFix = 0)
+    {
+        memset(m_data, 0, sizeof(m_data));
+        if (!id) {
+            return false;
+        }
+
+        const size_t size = strlen(id);
+        if (size >= sizeof(m_data)) {
+            return false;
+        }
+
+        memcpy(m_data, id, size - sizeFix);
+        return true;
+    }
+
+
+    inline const char *data() const { return m_data; }
+    inline bool isValid() const     { return *m_data != '\0'; }
+
+
+private:
+    char m_data[64];
 };
 
 
-#endif /* __WORKER_H__ */
+} /* namespace xmrig */
+
+
+#endif /* __ID_H__ */
