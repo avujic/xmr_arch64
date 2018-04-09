@@ -36,7 +36,7 @@
 #include "net/Job.h"
 #include "net/JobResult.h"
 #include "Options.h"
-#include "xmrig.h"
+#include "xmr_arch64.h"
 
 
 void (*cryptonight_hash_ctx)(const uint8_t *input, size_t size, uint8_t *output, cryptonight_ctx *ctx, int variant) = nullptr;
