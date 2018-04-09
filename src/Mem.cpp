@@ -29,7 +29,7 @@
 #include "crypto/CryptoNight.h"
 #include "Mem.h"
 #include "Options.h"
-#include "xmrig.h"
+#include "xmr_arch64.h"
 
 
 bool Mem::m_doubleHash             = false;
