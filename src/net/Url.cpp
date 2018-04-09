@@ -28,12 +28,12 @@
 
 
 #include "net/Url.h"
-#include "xmrig.h"
+#include "xmr_arch64.h"
 
-
-#ifdef _MSC_VER
-#   define strncasecmp(x,y,z) _strnicmp(x,y,z)
-#endif
+//
+//#ifdef _MSC_VER
+//#   define strncasecmp(x,y,z) _strnicmp(x,y,z)
+//#endif
 
 
 Url::Url() :
