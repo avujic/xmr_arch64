@@ -38,7 +38,7 @@
 #include "log/Log.h"
 #include "Mem.h"
 #include "Options.h"
-#include "xmrig.h"
+#include "xmr_arch64.h"
 
 
 bool Mem::allocate(int algo, int threads, bool doubleHash, bool enabled)
