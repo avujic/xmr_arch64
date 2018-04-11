@@ -4,7 +4,7 @@ Windows support inherited from xmrig/xmrig will be discarded in further developm
 
 Originally forked from xmrig/xmrig with full development in C++11.
 
-* [Roadmap](https://github.com/avujic/xmr_arch64/issues/106) for next releases.
+* [Roadmap](https://github.com/avujic/xmr_arch64/issues/8) for next releases.
 
 <img src="http://www.eplus.systems/wp-content/uploads/2018/01/xmr_eplus_systems.png" width="619" >
 
@@ -21,7 +21,7 @@ Originally forked from xmrig/xmrig with full development in C++11.
 * [Contacts](#contacts)
 
 ## Version
-* Code version: 0.0.6 
+* Code version: 0.1.1 
 
 ## Features
 * High performance.
@@ -114,7 +114,6 @@ Please note performance is highly dependent on system load. The numbers above ar
 ### Maximum performance checklist
 * Idle operating system.
 * Do not exceed optimal thread count.
-* Use modern CPUs with AES-NI instructuon set.
 * Try setup optimal cpu affinity.
 * Enable fast memory (Large/Huge pages).
 

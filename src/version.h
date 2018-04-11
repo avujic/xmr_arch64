@@ -28,15 +28,15 @@
 #define APP_ID        "xmr_arh64"
 #define APP_NAME      "xmr_arh64"
 #define APP_DESC      "amr_arh64 CPU miner"
-#define APP_VERSION   "0.0.8"
+#define APP_VERSION   "0.1.1"
 #define APP_DOMAIN    "eplus.systems"
 #define APP_SITE      "xmr.eplus.systems"
 #define APP_COPYRIGHT "Copyright (C) 2017-2018 ePlus Systems Ltd. [www.eplus.systems]"
 #define APP_KIND      "cpu"
 
 #define APP_VER_MAJOR  0
-#define APP_VER_MINOR  0
-#define APP_VER_BUILD  8
-#define APP_VER_REV    0
+#define APP_VER_MINOR  1
+#define APP_VER_BUILD  1
+#define APP_VER_REV    1
 
 #endif /* __VERSION_H__ */
