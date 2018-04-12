@@ -5,6 +5,7 @@
  * Copyright 2014-2016 Wolf9466    <https://github.com/OhGodAPet>
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
  * Copyright 2016-2017 XMRig       <support@xmrig.com>
+ * Copyright 2017-2018 ePlus Systems Ltd. <xmr@eplus.systems>
  *
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -21,6 +22,9 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sstream>
+#include <iostream>
+#include <iomanip>
 
 #include <chrono>
 #include <math.h>
@@ -148,17 +152,16 @@ void Hashrate::add(size_t threadId, uint64_t count, uint64_t timestamp)
 
 void Hashrate::print()
 {
-    char num1[8];
-    char num2[8];
-    char num3[8];
-    char num4[8];
+	std::stringstream sSt;
 
-    LOG_INFO(Options::i()->colors() ? "\x1B[01;37mspeed\x1B[0m 2.5s/60s/15m \x1B[01;36m%s \x1B[22;36m%s %s \x1B[01;36mH/s\x1B[0m max: \x1B[01;36m%s H/s" : "speed 2.5s/60s/15m %s %s %s H/s max: %s H/s",
-             format(calc(ShortInterval),  num1, sizeof(num1)),
-             format(calc(MediumInterval), num2, sizeof(num2)),
-             format(calc(LargeInterval),  num3, sizeof(num3)),
-             format(m_highest,            num4, sizeof(num4))
-             );
+     sSt.str("");
+     sSt << "Speed: 3s=";
+     sSt << fixed << setprecision(3) << calc(ShortInterval)  << " Hs | 60s=";
+     sSt << fixed << setprecision(3) << calc(MediumInterval) << " Hs | 900s=";
+     sSt << fixed << setprecision(3) << calc(LargeInterval)  << " Hs +++ ";
+     sSt << "Max=" << fixed << setprecision(3) << m_highest  << " Hs";
+
+     LOG_INFO( sSt.str().c_str() );
 }
 
 
@@ -170,7 +173,7 @@ void Hashrate::stop()
 
 void Hashrate::updateHighest()
 {
-   double highest = calc(ShortInterval);
+   double highest = calc(MediumInterval);
    if (isnormal(highest) && highest > m_highest) {
        m_highest = highest;
    }
