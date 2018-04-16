@@ -34,7 +34,7 @@
 #include "log/Log.h"
 #include "Options.h"
 #include "workers/Hashrate.h"
-
+using namespace std;
 
 inline const char *format(double h, char* buf, size_t size)
 {
