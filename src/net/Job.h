@@ -73,17 +73,17 @@ public:
     bool operator!=(const Job &other) const;
 
 private:
-    bool m_nicehash;
-    char m_coin[5];
-    int m_algo;
-    int m_poolId;
-    int m_threadId;
-    int m_variant;
-    size_t m_size;
-    uint64_t m_diff;
-    uint64_t m_target;
-    uint8_t m_blob[96]; // Max blob size is 84 (75 fixed + 9 variable), aligned to 96. https://github.com/xmrig/xmrig/issues/1 Thanks fireice-uk.
-    xmrig::Id m_id;
+    bool 		m_nicehash;
+    char 		m_coin[5];
+    int 		m_algo;
+    int 		m_poolId;
+    int 		m_threadId;
+    int 		m_variant;
+    size_t 		m_size;
+    uint64_t 	m_diff;
+    uint64_t 	m_target;
+    uint8_t 	m_blob[96]; // Max blob size is 84 (75 fixed + 9 variable), aligned to 96. https://github.com/xmrig/xmrig/issues/1 Thanks fireice-uk.
+    xmrig::Id 	m_id;
 };
 
 #endif /* __JOB_H__ */

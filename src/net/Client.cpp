@@ -6,6 +6,7 @@
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
  * Copyright 2017-2018 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
  * Copyright 2016-2018 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
+ * Copyright 2017-2018 ePlus Systems Ltd. <xmr@eplus.systems>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -37,18 +38,9 @@
 #include "rapidjson/error/en.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
+//---
+#include "net/JobResult.h"
 
-
-#ifdef XMRIG_PROXY_PROJECT
-#   include "proxy/JobResult.h"
-#else
-#   include "net/JobResult.h"
-#endif
-
-
-#ifdef _MSC_VER
-#   define strncasecmp(x,y,z) _strnicmp(x,y,z)
-#endif
 
 
 int64_t Client::m_sequence = 1;
@@ -170,10 +162,6 @@ bool Client::disconnect()
 
 int64_t Client::submit(const JobResult &result)
 {
-#   ifdef XMRIG_PROXY_PROJECT
-    const char *nonce = result.nonce;
-    const char *data  = result.result;
-#   else
     char nonce[9];
     char data[65];
 
@@ -182,16 +170,12 @@ int64_t Client::submit(const JobResult &result)
 
     Job::toHex(result.result, 32, data);
     data[64] = '\0';
-#   endif
+
 
     const size_t size = snprintf(m_sendBuf, sizeof(m_sendBuf), "{\"id\":%" PRIu64 ",\"jsonrpc\":\"2.0\",\"method\":\"submit\",\"params\":{\"id\":\"%s\",\"job_id\":\"%s\",\"nonce\":\"%s\",\"result\":\"%s\"}}\n",
                                  m_sequence, m_rpcId.data(), result.jobId.data(), nonce, data);
 
-#   ifdef XMRIG_PROXY_PROJECT
-    m_results[m_sequence] = SubmitResult(m_sequence, result.diff, result.actualDiff(), result.id);
-#   else
     m_results[m_sequence] = SubmitResult(m_sequence, result.diff, result.actualDiff());
-#   endif
 
     return send(size);
 }
@@ -233,7 +217,12 @@ bool Client::close()
     return true;
 }
 
-
+/*---------------------------------------------------------------------
+* NAME       : SisCriticalError(const char *message)
+* SYNOPSIS   : Check error messages
+* DESCRIPTION:
+*
+---------------------------------------------------------------------*/
 bool Client::isCriticalError(const char *message)
 {
     if (!message) {
@@ -255,7 +244,12 @@ bool Client::isCriticalError(const char *message)
     return false;
 }
 
-
+/*---------------------------------------------------------------------
+* NAME       : parseJob(const rapidjson::Value &params, int *code)
+* SYNOPSIS   : Parse job
+* DESCRIPTION:
+*
+---------------------------------------------------------------------*/
 bool Client::parseJob(const rapidjson::Value &params, int *code)
 {
     if (!params.IsObject()) {
@@ -263,13 +257,8 @@ bool Client::parseJob(const rapidjson::Value &params, int *code)
         return false;
     }
 
-#   ifdef XMRIG_PROXY_PROJECT
-    Job job(m_id, m_url.variant());
-    job.setClientId(m_rpcId);
-    job.setCoin(m_url.coin());
-#   else
     Job job(m_id, m_nicehash, m_url.algo(), m_url.variant());
-#   endif
+
 
     if (!job.setId(params["job_id"].GetString())) {
         *code = 3;
@@ -695,7 +684,7 @@ void Client::onConnect(uv_connect_t *req, int status)
 
     if (status < 0) {
         if (!client->m_quiet) {
-            LOG_ERR("[%s:%u] connect error: \"%s\"", client->m_url.host(), client->m_url.port(), uv_strerror(status));
+            LOG_ERR("[%s:%u] Connect error: \"%s\"", client->m_url.host(), client->m_url.port(), uv_strerror(status));
         }
 
         delete req;
@@ -723,7 +712,7 @@ void Client::onRead(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf)
 
     if (nread < 0) {
         if (nread != UV_EOF && !client->m_quiet) {
-            LOG_ERR("[%s:%u] read error: \"%s\"", client->m_url.host(), client->m_url.port(), uv_strerror((int) nread));
+            LOG_ERR("[%s:%u] Read error: \"%s\"", client->m_url.host(), client->m_url.port(), uv_strerror((int) nread));
         }
 
         client->close();

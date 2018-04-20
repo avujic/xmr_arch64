@@ -49,9 +49,9 @@ private:
 
     class State;
 
-    uint8_t m_hash[64];
-    State *m_state;
-    State *m_pausedState;
+    uint8_t  m_hash[64];
+    State   *m_state;
+    State   *m_pausedState;
 };
 
 

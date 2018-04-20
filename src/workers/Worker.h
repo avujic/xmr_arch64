@@ -48,14 +48,13 @@ public:
 protected:
     void storeStats();
 
-    cryptonight_ctx *m_ctx;
-    int m_id;
-    int m_threads;
+    cryptonight_ctx       *m_ctx;
+    int                   m_id;
+    int                   m_threads;
     std::atomic<uint64_t> m_hashCount;
     std::atomic<uint64_t> m_timestamp;
-    uint64_t m_count;
-    uint64_t m_sequence;
+    uint64_t              m_count;
+    uint64_t              m_sequence;
 };
-
 
 #endif /* __WORKER_H__ */

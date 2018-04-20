@@ -28,12 +28,6 @@
 #include <string.h>
 #include <time.h>
 
-#ifdef WIN32
-#   include <winsock2.h>
-#   include <windows.h>
-#endif
-
-
 #include "log/ConsoleLog.h"
 #include "log/Log.h"
 #include "Options.h"
@@ -52,17 +46,6 @@ ConsoleLog::ConsoleLog(bool colors) :
     uv_tty_set_mode(&m_tty, UV_TTY_MODE_NORMAL);
     m_uvBuf.base = m_buf;
     m_stream     = reinterpret_cast<uv_stream_t*>(&m_tty);
-
-#   ifdef WIN32
-    HANDLE handle = GetStdHandle(STD_INPUT_HANDLE);
-    if (handle != INVALID_HANDLE_VALUE) {
-        DWORD mode = 0;
-        if (GetConsoleMode(handle, &mode)) {
-           mode &= ~ENABLE_QUICK_EDIT_MODE;
-           SetConsoleMode(handle, mode | ENABLE_EXTENDED_FLAGS);
-        }
-    }
-#   endif
 }
 
 
@@ -71,11 +54,7 @@ void ConsoleLog::message(int level, const char* fmt, va_list args)
     time_t now = time(nullptr);
     tm stime;
 
-#   ifdef _WIN32
-    localtime_s(&stime, &now);
-#   else
     localtime_r(&now, &stime);
-#   endif
 
     const char* color = nullptr;
     if (m_colors) {

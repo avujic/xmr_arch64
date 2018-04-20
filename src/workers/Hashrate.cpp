@@ -142,14 +142,19 @@ double Hashrate::calc(size_t threadId, size_t ms) const
 
 void Hashrate::add(size_t threadId, uint64_t count, uint64_t timestamp)
 {
-    const size_t top = m_top[threadId];
+    const size_t top            = m_top[threadId];
     m_counts[threadId][top]     = count;
     m_timestamps[threadId][top] = timestamp;
 
     m_top[threadId] = (top + 1) & kBucketMask;
 }
 
-
+/*---------------------------------------------------------------------
+* NAME       : print()
+* SYNOPSIS   : Console status report print
+* DESCRIPTION: Results are with 3 decimal points
+*              We will transform every "pure C" line into C++11
+---------------------------------------------------------------------*/
 void Hashrate::print()
 {
 	std::stringstream sSt;
@@ -165,6 +170,11 @@ void Hashrate::print()
 }
 
 
+/*---------------------------------------------------------------------
+* NAME       : stop()
+* SYNOPSIS   : uv_timer_stop
+* DESCRIPTION:
+---------------------------------------------------------------------*/
 void Hashrate::stop()
 {
     uv_timer_stop(&m_timer);

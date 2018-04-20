@@ -69,12 +69,11 @@ public:
         return Job::toDiff(reinterpret_cast<const uint64_t*>(result)[3]);
     }
 
-
-    int poolId;
-    uint32_t diff;
-    uint32_t nonce;
-    uint8_t result[32];
-    xmrig::Id jobId;
+    int        poolId;
+    uint32_t   diff;
+    uint32_t   nonce;
+    uint8_t    result[32];
+    xmrig::Id  jobId;
 };
 
 #endif /* __JOBRESULT_H__ */

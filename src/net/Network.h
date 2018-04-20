@@ -28,7 +28,6 @@
 #include <vector>
 #include <uv.h>
 
-
 #include "api/NetworkState.h"
 #include "interfaces/IJobResultListener.h"
 #include "interfaces/IStrategyListener.h"
@@ -63,11 +62,11 @@ private:
 
   static void onTick(uv_timer_t *handle);
 
-  const Options *m_options;
-  IStrategy *m_donate;
-  IStrategy *m_strategy;
-  NetworkState m_state;
-  uv_timer_t m_timer;
+  const Options  *m_options;
+  IStrategy      *m_donate;
+  IStrategy      *m_strategy;
+  NetworkState    m_state;
+  uv_timer_t      m_timer;
 };
 
 

@@ -36,7 +36,7 @@ public:
 
     void done();
 
-    int64_t seq;
+    int64_t  seq;
     uint32_t diff;
     uint64_t actualDiff;
     uint64_t elapsed;

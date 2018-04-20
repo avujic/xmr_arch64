@@ -46,8 +46,8 @@ private:
     void consumeJob();
     void save(const Job &job);
 
-    Job m_job;
-    Job m_paused;
+    Job       m_job;
+    Job       m_paused;
     JobResult m_result;
 };
 

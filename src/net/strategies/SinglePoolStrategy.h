@@ -56,8 +56,8 @@ protected:
     void onResultAccepted(Client *client, const SubmitResult &result, const char *error) override;
 
 private:
-    bool m_active;
-    Client *m_client;
+    bool               m_active;
+    Client            *m_client;
     IStrategyListener *m_listener;
 };
 

@@ -21,14 +21,9 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef _MSC_VER
-#pragma warning(disable:4244)
-#endif
-
 #include <inttypes.h>
 #include <memory>
 #include <time.h>
-
 
 #include "api/Api.h"
 #include "log/Log.h"
@@ -129,12 +124,12 @@ void Network::onJobResult(const JobResult &result)
 void Network::onPause(IStrategy *strategy)
 {
     if (m_donate && m_donate == strategy) {
-        LOG_NOTICE("dev donate finished");
+        LOG_NOTICE("Dev donate finished");
         m_strategy->resume();
     }
 
     if (!m_strategy->isActive()) {
-        LOG_ERR("no active pools, stop mining");
+        LOG_ERR("No active pools, stop mining");
         m_state.stop();
         return Workers::pause();
     }
@@ -146,12 +141,12 @@ void Network::onResultAccepted(IStrategy *strategy, Client *client, const Submit
     m_state.add(result, error);
 
     if (error) {
-        LOG_INFO(m_options->colors() ? "\x1B[01;31mrejected\x1B[0m (%" PRId64 "/%" PRId64 ") diff \x1B[01;37m%u\x1B[0m \x1B[31m\"%s\"\x1B[0m \x1B[01;30m(%" PRIu64 " ms)"
+        LOG_INFO(m_options->colors() ? "\x1B[01;31mRejected\x1B[0m (%" PRId64 "/%" PRId64 ") diff \x1B[01;37m%u\x1B[0m \x1B[31m\"%s\"\x1B[0m \x1B[01;30m(%" PRIu64 " ms)"
                                      : "rejected (%" PRId64 "/%" PRId64 ") diff %u \"%s\" (%" PRIu64 " ms)",
                  m_state.accepted, m_state.rejected, result.diff, error, result.elapsed);
     }
     else {
-        LOG_INFO(m_options->colors() ? "\x1B[01;32maccepted\x1B[0m (%" PRId64 "/%" PRId64 ") diff \x1B[01;37m%u\x1B[0m \x1B[01;30m(%" PRIu64 " ms)"
+        LOG_INFO(m_options->colors() ? "\x1B[01;32mAccepted\x1B[0m (%" PRId64 "/%" PRId64 ") diff \x1B[01;37m%u\x1B[0m \x1B[01;30m(%" PRIu64 " ms)"
                                      : "accepted (%" PRId64 "/%" PRId64 ") diff %u (%" PRIu64 " ms)",
                  m_state.accepted, m_state.rejected, result.diff, result.elapsed);
     }
@@ -161,10 +156,10 @@ void Network::onResultAccepted(IStrategy *strategy, Client *client, const Submit
 void Network::setJob(Client *client, const Job &job, bool donate)
 {
     if (m_options->colors()) {
-        LOG_INFO("\x1B[01;35mnew job\x1B[0m from \x1B[01;37m%s:%d\x1B[0m diff \x1B[01;37m%d", client->host(), client->port(), job.diff());
+        LOG_INFO("\x1B[01;35mNew job\x1B[0m from \x1B[01;37m%s:%d\x1B[0m diff \x1B[01;37m%d", client->host(), client->port(), job.diff());
     }
     else {
-        LOG_INFO("new job from %s:%d diff %d", client->host(), client->port(), job.diff());
+        LOG_INFO("New job from %s:%d diff %d", client->host(), client->port(), job.diff());
     }
 
     m_state.diff = job.diff();

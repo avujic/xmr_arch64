@@ -31,9 +31,9 @@
 class Url
 {
 public:
-    constexpr static const char *kDefaultPassword = "x";
-    constexpr static const char *kDefaultUser     = "x";
-    constexpr static uint16_t kDefaultPort        = 3333;
+    constexpr static const char    *kDefaultPassword   = "x";
+    constexpr static const char    *kDefaultUser       = "x";
+    constexpr static uint16_t      kDefaultPort        = 3333;
 
     Url();
     Url(const char *url);
@@ -67,15 +67,15 @@ public:
 private:
     bool parseIPv6(const char *addr);
 
-    bool m_keepAlive;
-    bool m_nicehash;
-    char *m_host;
-    char *m_password;
-    char *m_user;
-    int m_algo;
-    int m_variant;
-    mutable char *m_url;
-    uint16_t m_port;
+    bool 			m_keepAlive;
+    bool 			m_nicehash;
+    char 		   *m_host;
+    char 		   *m_password;
+    char 		   *m_user;
+    int 			m_algo;
+    int 			m_variant;
+    mutable char   *m_url;
+    uint16_t 		m_port;
 };
 
 #endif /* __URL_H__ */

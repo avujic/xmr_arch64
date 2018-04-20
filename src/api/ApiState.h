@@ -51,12 +51,12 @@ private:
     void getMiner(rapidjson::Document &doc) const;
     void getResults(rapidjson::Document &doc) const;
 
-    char m_id[17];
-    char m_workerId[128];
+    char    m_id[17];
+    char    m_workerId[128];
     double *m_hashrate;
-    double m_highestHashrate;
-    double m_totalHashrate[3];
-    int m_threads;
+    double  m_highestHashrate;
+    double  m_totalHashrate[3];
+    int     m_threads;
     NetworkState m_network;
 };
 

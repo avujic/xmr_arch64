@@ -33,7 +33,7 @@ class Hashrate
 {
 public:
     enum Intervals {
-        ShortInterval  = 2500,
+        ShortInterval  = 3000,
         MediumInterval = 60000,
         LargeInterval  = 900000
     };
@@ -55,9 +55,9 @@ private:
     constexpr static size_t kBucketSize = 2 << 11;
     constexpr static size_t kBucketMask = kBucketSize - 1;
 
-    double m_highest;
-    int m_threads;
-    uint32_t* m_top;
+    double     m_highest;
+    int        m_threads;
+    uint32_t*  m_top;
     uint64_t** m_counts;
     uint64_t** m_timestamps;
     uv_timer_t m_timer;
